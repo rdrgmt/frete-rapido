@@ -3,8 +3,8 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
-	"frete-rapido/src/domain/repository"
-	"frete-rapido/src/service"
+	domain "frete-rapido/src/domain/repository"
+	service "frete-rapido/src/service/repository"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 
 // Quote -
 func Quote(w http.ResponseWriter, r *http.Request) {
-	request := repository.RequestQuote{}
+	request := domain.RequestQuote{}
 
 	// decode the request
 	err := json.NewDecoder(r.Body).Decode(&request)
