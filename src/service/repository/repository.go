@@ -1,13 +1,17 @@
 package service
 
 import (
-	"frete-rapido/src/domain/repository"
+	"bytes"
+	"encoding/json"
+	"errors"
+	domain "frete-rapido/src/domain/repository"
+	"net/http"
 	"strconv"
 	"strings"
 )
 
 // Check - validates the request
-func Check(request repository.RequestQuote) (args []string) {
+func Check(request domain.RequestQuote) (args []string) {
 	args = make([]string, 0)
 
 	// contains zipcode?
@@ -52,7 +56,7 @@ func Check(request repository.RequestQuote) (args []string) {
 }
 
 // Build - builds the request to the API
-func Build(requestQuote repository.RequestQuote) (requestAPI repository.RequestAPI) {
+func Build(requestQuote domain.RequestQuote) (requestAPI domain.RequestAPI) {
 	// shipper
 	requestAPI.Shipper.RegisteredNumber = "25438296000158"
 	requestAPI.Shipper.Token = "1d52a9b6b78cf07b08586152459a5c90"
@@ -64,7 +68,7 @@ func Build(requestQuote repository.RequestQuote) (requestAPI repository.RequestA
 	requestAPI.Recipient.Zipcode, _ = strconv.Atoi(requestQuote.Recipient.Address.Zipcode)
 
 	// dispatchers
-	var dispatcher repository.Dispatcher
+	var dispatcher domain.Dispatcher
 	dispatcher.RegisteredNumber = "25438296000158"
 	dispatcher.Zipcode = requestAPI.Recipient.Zipcode
 	for _, volume := range requestQuote.Volumes {
@@ -82,4 +86,64 @@ func Build(requestQuote repository.RequestQuote) (requestAPI repository.RequestA
 	requestAPI.Returns.AppliedRules = false // fixed for now
 
 	return requestAPI
+}
+
+// Simulate - sends the request to the API
+func Simulate(requestAPI domain.RequestAPI) (responseAPI domain.ResponseAPI, err error) {
+	path := "https://sp.freterapido.com/api/v3/quote/simulate"
+	method := http.MethodPost
+
+	// build the request
+	payload, err := json.Marshal(requestAPI)
+	if err != nil {
+		return responseAPI, err
+	}
+
+	client := &http.Client{}
+	request, err := http.NewRequest(method, path, bytes.NewReader(payload))
+	if err != nil {
+		return responseAPI, err
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
+
+	// send the request
+	response, err := client.Do(request)
+	if err != nil {
+		return responseAPI, err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return responseAPI, errors.New("API returned a non-200 status code")
+	}
+
+	// decode the response
+	err = json.NewDecoder(response.Body).Decode(&responseAPI)
+	if err != nil {
+		return responseAPI, errors.New("Failed to decode the response: " + err.Error())
+	}
+
+	return responseAPI, err
+}
+
+// Format - formats the response from the API to the desired format
+func Format(responseAPI domain.ResponseAPI) (responseQuote domain.ResponseQuote) {
+	// check if there are dispatchers
+	if len(responseAPI.Dispatchers) == 0 {
+		return responseQuote
+	}
+
+	// format the response
+	for _, offer := range responseAPI.Dispatchers[0].Offers {
+		responseQuote.Carrier = append(responseQuote.Carrier, domain.CarrierQuote{
+			Name:     offer.Carrier.Name,
+			Service:  offer.Modal,
+			Deadline: offer.CarrierOriginalDeliveryTime.Days,
+			Price:    offer.FinalPrice,
+		})
+	}
+
+	return responseQuote
 }
