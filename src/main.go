@@ -3,5 +3,5 @@ package main
 import "frete-rapido/src/app"
 
 func main() {
-	app.StartApp()
+	app.Init()
 }

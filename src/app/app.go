@@ -11,8 +11,8 @@ var (
 	router = mux.NewRouter().StrictSlash(true)
 )
 
-// StartApp -
-func StartApp() {
+// Init -
+func Init() {
 	// map the urls
 	urlMaps()
 	// start the server
