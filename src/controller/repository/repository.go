@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"frete-rapido/src/domain/repository"
+	"frete-rapido/src/service"
 	"net/http"
-	"strings"
 )
 
 // Welcome - a testpage to see if the server is running
@@ -27,19 +27,11 @@ func Quote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// validate the request
-	// contains zipcode?
-	if strings.EqualFold(request.Recipient.Address.Zipcode, "") {
+	invalidArgs := service.Check(request)
+	if len(invalidArgs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Bad Request: Zipcode is required"})
-		return
-	}
-
-	// contains volumes?
-	if len(request.Volumes) == 0 {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Bad Request: Volumes is required"})
+		json.NewEncoder(w).Encode(map[string][]string{"error": invalidArgs})
 		return
 	}
 

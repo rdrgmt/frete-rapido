@@ -12,7 +12,7 @@ type RequestQuote struct {
 
 // Volume -
 type Volume struct {
-	Category      int     `json:"category"`
+	Category      string  `json:"category"`
 	Amount        int     `json:"amount"`
 	UnitaryWeight int     `json:"unitary_weight"`
 	Price         int     `json:"price"`
