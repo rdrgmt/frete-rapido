@@ -35,8 +35,11 @@ func Quote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// build the request
+	requestAPI := service.Build(request)
+
 	// all set! return the request
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(request)
+	json.NewEncoder(w).Encode(requestAPI)
 }
