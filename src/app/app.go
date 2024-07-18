@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	mongodb "frete-rapido/src/db/repository"
 )
 
 var (
@@ -15,6 +17,10 @@ var (
 func Init() {
 	// map the urls
 	urlMaps()
+
+	// create the database
+	mongodb.CreateDB()
+
 	// start the server
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
