@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - backend
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-frete-rapido
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mongodb_data:
+  mongodb_config:
