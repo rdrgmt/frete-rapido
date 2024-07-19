@@ -14,6 +14,6 @@ const (
 	Token = "1d52a9b6b78cf07b08586152459a5c90"
 	// PlatformCode -
 	PlatformCode = "5AKVkHqCn"
-	// Path
+	// Path -
 	Path = "https://sp.freterapido.com/api/v3/quote/simulate"
 )
