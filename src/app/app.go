@@ -21,7 +21,8 @@ func Init() {
 
 	// map the urls
 	router.HandleFunc("/", controller.Welcome)
-	router.HandleFunc("/quote", controller.Quote).Methods("POST")
+	router.HandleFunc("/quote", controller.Quote).Methods(http.MethodPost)
+	router.HandleFunc("/metrics", controller.Metrics).Methods(http.MethodGet)
 	// start the server
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
