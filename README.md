@@ -27,7 +27,7 @@ docker compose up --build
 
 ### [POST] .../quote
 
-* Request
+#### Request
 ```bash
 curl --location 'http://localhost:8080/quote' \
 --header 'Content-Type: application/json' \
@@ -61,7 +61,7 @@ curl --location 'http://localhost:8080/quote' \
     ]
 }'
 ```
-* Response
+#### Response
 
 ```json
 {
@@ -96,12 +96,12 @@ curl --location 'http://localhost:8080/quote' \
 
 ### [GET] .../metrics?last_quotes=
 
-* Request
+#### Request
 ```bash
 curl --location 'http://localhost:8080/metrics?last_quotes=6'
 ```
 
-* Response
+#### Response
 ```json
 {
     "metrics": [
