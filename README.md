@@ -1,8 +1,4 @@
 # frete-rapido
-
-A toy app made as a backend challenge at Frete Rapido.
-
-
 ## Requisites
 * Docker
 * Docker Compose
