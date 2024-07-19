@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"gopkg.in/mgo.v2/bson"
 
 	domain "frete-rapido/src/domain"
 )
@@ -74,4 +75,32 @@ func SaveQuoteDB(responseQuote domain.ResponseQuote) {
 	log.Printf("Quote saved with ID: %v", quoteResult.InsertedID)
 
 	return
+}
+
+// RetrieveQuotesDB - retrieves the quotes from the database
+func RetrieveQuotesDB(lastQuotes int64) (quotes []QuoteBD, err error) {
+	var cursor *mongo.Cursor
+
+	// retrieve the collection
+	quoteCollection := mongoClient.Database("freterapido").Collection("quotes")
+
+	// check if lastquotes is set
+	if lastQuotes > 0 {
+		cursor, err = quoteCollection.Find(context.Background(), bson.M{}, options.Find().SetLimit(lastQuotes).SetSort(bson.M{"created_at": -1}))
+	} else {
+		cursor, err = quoteCollection.Find(context.Background(), bson.M{})
+	}
+	if err != nil {
+		log.Printf("Error retrieving quotes: %v", err)
+		return quotes, err
+	}
+
+	// convert the cursor to an array
+	err = cursor.All(context.Background(), &quotes)
+	if err != nil {
+		log.Printf("Error converting quotes to json: %v", err)
+		return quotes, err
+	}
+
+	return quotes, err
 }
