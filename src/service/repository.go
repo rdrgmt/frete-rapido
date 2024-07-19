@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	mongodb "frete-rapido/src/db"
 	domain "frete-rapido/src/domain"
 	"net/http"
 	"strconv"
@@ -146,4 +147,47 @@ func Format(responseAPI domain.ResponseAPI) (responseQuote domain.ResponseQuote)
 	}
 
 	return responseQuote
+}
+
+// Prepare - prepares the quotes to be posted to the api
+func Prepare(quotes []mongodb.QuoteBD) (responseMetrics domain.ResponseMetrics, err error) {
+	// create map to store metrics
+	mapMetrics := domain.Metric{
+		ResultsPerCarrier:    make(map[string]int),
+		TotalPricePerCarrier: make(map[string]float64),
+		AvgPricePerCarrier:   make(map[string]float64),
+		CheapestFreight:      make(map[string]float64),
+		PriciestFreight:      make(map[string]float64),
+	}
+
+	// iterate over the quotes
+	for _, quote := range quotes {
+		for _, carrier := range quote.Carriers {
+			// total results
+			mapMetrics.ResultsPerCarrier[carrier.Name]++
+
+			// total price
+			mapMetrics.TotalPricePerCarrier[carrier.Name] = (mapMetrics.TotalPricePerCarrier[carrier.Name] + carrier.Price)
+			mapMetrics.TotalPricePerCarrier[carrier.Name] = float64(int(mapMetrics.TotalPricePerCarrier[carrier.Name]*100)) / 100
+
+			// average price
+			mapMetrics.AvgPricePerCarrier[carrier.Name] = mapMetrics.TotalPricePerCarrier[carrier.Name] / float64(mapMetrics.ResultsPerCarrier[carrier.Name])
+			mapMetrics.AvgPricePerCarrier[carrier.Name] = float64(int(mapMetrics.AvgPricePerCarrier[carrier.Name]*100)) / 100
+
+			// cheapest freight
+			if mapMetrics.CheapestFreight[carrier.Name] == 0 || carrier.Price < mapMetrics.CheapestFreight[carrier.Name] {
+				mapMetrics.CheapestFreight[carrier.Name] = carrier.Price
+			}
+
+			// priciest freight
+			if mapMetrics.PriciestFreight[carrier.Name] == 0 || carrier.Price > mapMetrics.PriciestFreight[carrier.Name] {
+				mapMetrics.PriciestFreight[carrier.Name] = carrier.Price
+			}
+		}
+	}
+
+	// append the metrics to the response
+	responseMetrics.Metrics = append(responseMetrics.Metrics, mapMetrics)
+
+	return responseMetrics, err
 }

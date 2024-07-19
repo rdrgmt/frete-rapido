@@ -125,3 +125,17 @@ type CarrierQuote struct {
 	Deadline int     `json:"deadline"`
 	Price    float64 `json:"price"`
 }
+
+// ResponseMetrics -
+type ResponseMetrics struct {
+	Metrics []Metric `json:"metrics"`
+}
+
+// Metric -
+type Metric struct {
+	ResultsPerCarrier    map[string]int     `json:"results_per_carrier"`
+	TotalPricePerCarrier map[string]float64 `json:"total_price_per_carrier"`
+	AvgPricePerCarrier   map[string]float64 `json:"avg_price_per_carrier"`
+	CheapestFreight      map[string]float64 `json:"cheapest_freight"`
+	PriciestFreight      map[string]float64 `json:"priciest_freight"`
+}
