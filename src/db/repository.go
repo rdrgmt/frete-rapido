@@ -42,6 +42,7 @@ func CreateDB() {
 	}
 	log.Println("Connected to MongoDB!")
 
+	// set the client
 	mongoClient = client
 }
 
