@@ -1,23 +1,24 @@
 # frete-rapido
 
-A toy app that displays metrics ofca
+A toy app made as a backend challenge at Frete Rapido.
+
 
 ## Requisites
-Docker
-Docker Compose
+* Docker
+* Docker Compose
 
 ## Usage
-Clone this repository
+* Clone this repository
 ```
 git clone https://github.com/rdrgmt/frete-rapido.git
 ```
 
-Navigate to project directory
+* Navigate to project directory
 ```
 cd frete-rapido
 ```
 
-Run Docker Compose
+* Run Docker Compose
 ```
 docker compose up --build
 ```
@@ -26,7 +27,7 @@ docker compose up --build
 
 ### [POST] .../quote
 
-#### Request
+* Request
 ```bash
 curl --location 'http://localhost:8080/quote' \
 --header 'Content-Type: application/json' \
@@ -60,7 +61,7 @@ curl --location 'http://localhost:8080/quote' \
     ]
 }'
 ```
-#### Response
+* Response
 
 ```json
 {
@@ -95,12 +96,12 @@ curl --location 'http://localhost:8080/quote' \
 
 ### [GET] .../metrics?last_quotes=
 
-#### Request
+* Request
 ```bash
 curl --location 'http://localhost:8080/metrics?last_quotes=6'
 ```
 
-#### Response
+* Response
 ```json
 {
     "metrics": [
