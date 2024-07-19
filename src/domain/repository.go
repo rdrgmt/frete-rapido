@@ -55,14 +55,17 @@ type Dispatcher struct {
 
 // ResponseAPI -
 type ResponseAPI struct {
-	Dispatchers []struct {
-		ID                         string  `json:"id"`
-		RequestID                  string  `json:"request_id"`
-		RegisteredNumberShipper    string  `json:"registered_number_shipper"`
-		RegisteredNumberDispatcher string  `json:"registered_number_dispatcher"`
-		ZipcodeOrigin              int     `json:"zipcode_origin"`
-		Offers                     []Offer `json:"offers"`
-	} `json:"dispatchers"`
+	Dispatchers []DispatcherAPI `json:"dispatchers"`
+}
+
+// DispatcherAPI -
+type DispatcherAPI struct {
+	ID                         string  `json:"id"`
+	RequestID                  string  `json:"request_id"`
+	RegisteredNumberShipper    string  `json:"registered_number_shipper"`
+	RegisteredNumberDispatcher string  `json:"registered_number_dispatcher"`
+	ZipcodeOrigin              int     `json:"zipcode_origin"`
+	Offers                     []Offer `json:"offers"`
 }
 
 // ResponseDispatcher -
