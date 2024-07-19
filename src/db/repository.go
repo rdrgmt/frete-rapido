@@ -31,16 +31,15 @@ type Carrier struct {
 
 // CreateDB - creates the database
 func CreateDB() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	clientOptions := options.Client().ApplyURI("mongodb://mongodb:27017")
+	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		panic(err)
+		log.Fatalf("could not connect to mongo: %v", err)
 	}
 
-	// check if the connection is working
-	if err := client.Ping(context.Background(), nil); err != nil {
-		panic(err)
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Fatalf("ping not working: %v", err)
 	}
 	log.Println("Connected to MongoDB!")
 
