@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	domain "frete-rapido/src/domain/repository"
+	domain "frete-rapido/src/domain"
 	"net/http"
 	"strconv"
 	"strings"

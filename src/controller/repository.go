@@ -3,8 +3,8 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
-	domain "frete-rapido/src/domain/repository"
-	service "frete-rapido/src/service/repository"
+	domain "frete-rapido/src/domain"
+	service "frete-rapido/src/service"
 	"net/http"
 )
 

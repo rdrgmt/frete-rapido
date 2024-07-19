@@ -1,6 +1,8 @@
 package main
 
-import "frete-rapido/src/app"
+import (
+	"frete-rapido/src/app"
+)
 
 func main() {
 	app.Init()

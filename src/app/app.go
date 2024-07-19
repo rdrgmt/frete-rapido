@@ -4,9 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	controller "frete-rapido/src/controller"
+	mongodb "frete-rapido/src/db"
 
-	mongodb "frete-rapido/src/db/repository"
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -15,12 +16,12 @@ var (
 
 // Init -
 func Init() {
-	// map the urls
-	urlMaps()
-
 	// create the database
 	mongodb.CreateDB()
 
+	// map the urls
+	router.HandleFunc("/", controller.Welcome)
+	router.HandleFunc("/quote", controller.Quote).Methods("POST")
 	// start the server
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
