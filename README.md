@@ -19,6 +19,8 @@ cd frete-rapido
 docker compose up --build
 ```
 
+This application runs at `http://localhost:8080/`.
+
 ## Tree
 ```text
 ├─ src/
