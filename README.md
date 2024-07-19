@@ -23,6 +23,31 @@ cd frete-rapido
 docker compose up --build
 ```
 
+## Tree
+```text
+├─ src/
+|   ├─  app/
+|   |   └─ app.go
+|   ├─  config/
+|   |   └─ environment.go
+|   ├─  controller/
+|   |   └─ repository.go
+|   ├─  db/
+|   |   └─ repository.go
+|   ├─  domain/
+|   |   └─ repository.go
+|   ├─  service/
+|   |   └─ repository_test.go
+|   |    └─ repository_.go
+|   ├─  main.go
+├─  .gitignore
+├─  .docker-compose.yml
+├─  Dockerfile
+├─  go.mod
+├─  go.sum
+└─  README.md
+```
+
 ## Endpoints
 
 ### [POST] .../quote
