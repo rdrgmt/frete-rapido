@@ -38,7 +38,7 @@ docker compose up --build
 |   |   └─ repository.go
 |   ├─  service/
 |   |   └─ repository_test.go
-|   |    └─ repository_.go
+|   |   └─ repository_.go
 |   ├─  main.go
 ├─  .gitignore
 ├─  .docker-compose.yml
