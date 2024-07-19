@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
 
+	"frete-rapido/src/config"
 	domain "frete-rapido/src/domain"
 )
 
@@ -48,9 +49,9 @@ func CreateDB() {
 }
 
 // SaveQuoteDB - saves the quote to the database
-func SaveQuoteDB(responseQuote domain.ResponseQuote) {
+func SaveQuoteDB(responseQuote domain.ResponseQuote) (err error) {
 	// create collection if it doesn't exist
-	quoteCollection := mongoClient.Database("freterapido").Collection("quotes")
+	quoteCollection := mongoClient.Database(config.Database).Collection(config.Collection)
 
 	// fill the object
 	var quoteBD QuoteBD
@@ -68,13 +69,13 @@ func SaveQuoteDB(responseQuote domain.ResponseQuote) {
 	quoteResult, err := quoteCollection.InsertOne(context.Background(), quoteBD)
 	if err != nil {
 		log.Printf("Error saving quote: %v", err)
-		return
+		return err
 	}
 
 	// get objectID
 	log.Printf("Quote saved with ID: %v", quoteResult.InsertedID)
 
-	return
+	return err
 }
 
 // RetrieveQuotesDB - retrieves the quotes from the database
@@ -82,7 +83,7 @@ func RetrieveQuotesDB(lastQuotes int64) (quotes []QuoteBD, err error) {
 	var cursor *mongo.Cursor
 
 	// retrieve the collection
-	quoteCollection := mongoClient.Database("freterapido").Collection("quotes")
+	quoteCollection := mongoClient.Database(config.Database).Collection(config.Collection)
 
 	// check if lastquotes is set
 	if lastQuotes > 0 {

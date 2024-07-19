@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"frete-rapido/src/config"
 	mongodb "frete-rapido/src/db"
 	domain "frete-rapido/src/domain"
 	"net/http"
@@ -59,18 +60,18 @@ func Check(request domain.RequestQuote) (args []string) {
 // Build - builds the request to the API
 func Build(requestQuote domain.RequestQuote) (requestAPI domain.RequestAPI) {
 	// shipper
-	requestAPI.Shipper.RegisteredNumber = "25438296000158"
-	requestAPI.Shipper.Token = "1d52a9b6b78cf07b08586152459a5c90"
-	requestAPI.Shipper.PlatformCode = "5AKVkHqCn"
+	requestAPI.Shipper.RegisteredNumber = config.RegisteredNumber
+	requestAPI.Shipper.Token = config.Token
+	requestAPI.Shipper.PlatformCode = config.PlatformCode
 
 	// recipient
-	requestAPI.Recipient.Type = 0
+	requestAPI.Recipient.Type = 0        // fixed for now
 	requestAPI.Recipient.Country = "BRA" // fixed for now
 	requestAPI.Recipient.Zipcode, _ = strconv.Atoi(requestQuote.Recipient.Address.Zipcode)
 
 	// dispatchers
 	var dispatcher domain.Dispatcher
-	dispatcher.RegisteredNumber = "25438296000158"
+	dispatcher.RegisteredNumber = config.RegisteredNumber
 	dispatcher.Zipcode = requestAPI.Recipient.Zipcode
 	for _, volume := range requestQuote.Volumes {
 		volume.UnitaryPrice = volume.Price / volume.Amount
@@ -91,7 +92,7 @@ func Build(requestQuote domain.RequestQuote) (requestAPI domain.RequestAPI) {
 
 // Simulate - sends the request to the API
 func Simulate(requestAPI domain.RequestAPI) (responseAPI domain.ResponseAPI, err error) {
-	path := "https://sp.freterapido.com/api/v3/quote/simulate"
+	path := config.Path
 	method := http.MethodPost
 
 	// build the request
